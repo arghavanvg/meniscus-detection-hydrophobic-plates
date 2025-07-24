@@ -45,13 +45,13 @@ def get_plate_boundaries(traj, plate_atom_indices, plate_distance):
     z_max = np.max(wall_coords[:, 2])
     return x_min, x_max, y_min, y_max, z_min, z_max
 
-def count_waters_per_frame(traj, water_indices, bounds):
+def count_waters_per_frame(traj, ox_indices, bounds):
     """
     Count the number of water molecules between the plates for each frame.
 
     Args:
         traj (md.Trajectory): Molecular dynamics trajectory object.
-        water_indices (list or np.ndarray): Indices of water oxygen atoms.
+        ox_indices (list or np.ndarray): Indices of water oxygen atoms.
         bounds (tuple): (x_min, x_max, y_min, y_max, z_min, z_max) boundaries of the region between plates.
 
     Returns:
@@ -60,7 +60,7 @@ def count_waters_per_frame(traj, water_indices, bounds):
     x_min, x_max, y_min, y_max, z_min, z_max = bounds
     num_waters_per_frame = []
     for frame_num in range(traj.n_frames):
-        coords = traj.xyz[frame_num][water_indices]
+        coords = traj.xyz[frame_num][ox_indices]
         in_box = (
             (coords[:, 0] >= x_min) & (coords[:, 0] <= x_max) &
             (coords[:, 1] >= y_min) & (coords[:, 1] <= y_max) &
@@ -105,13 +105,14 @@ def main():
 
     traj = load_trajectory(input_path, temp, dist)
     tpl = traj.topology
-    ox_indices = tpl.select("name O")
+    all_ox_indices = tpl.select("name O")
     plate_indices = tpl.select("resname =~ 'WALL'")
 
     bounds = get_plate_boundaries(traj, plate_indices, plate_distance)
-    no_of_waters_between_plates = count_waters_per_frame(traj, ox_indices, bounds)
+    no_of_waters_between_plates = count_waters_per_frame(traj, all_ox_indices, bounds)
 
     save_dx_file(output_path, no_of_waters_between_plates)
+
 
 if __name__ == "__main__":
     main()
