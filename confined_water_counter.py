@@ -22,20 +22,20 @@ def load_trajectory(input_path: str, temp: int, dist: str):
     traj = md.load(traj_path, top=top_path)
     return traj
 
-def get_plate_boundaries(traj, plate_atoms, plate_distance):
+def get_plate_boundaries(traj, plate_atom_indices, plate_distance):
     """
-    Get the boundaries of the plates.
+    Get the boundaries of the plates from the first frame. plates are fixed. so the first frame is sufficient.
+    plates are centered at x=2.50 nm, and the distance between them is given by plate_distance.
 
     Args:
         traj (md.Trajectory): Molecular dynamics trajectory object.
         plate_atoms (list or np.ndarray): Indices of atoms that make up the plate surfaces.
-        plate_distance (float): Distance between the plates in nanometers.
-
+        plate_distance (float): Distance between the plates in nanometers
     Returns:
         tuple: (x_min, x_max, y_min, y_max, z_min, z_max) boundaries of the region between plates.
     """
 
-    wall_coords = traj.xyz[0][plate_atoms]
+    wall_coords = traj.xyz[0][plate_atom_indices]
     x_center = 2.50
     x_min = np.float32(x_center - plate_distance / 2)
     x_max = np.float32(x_center + plate_distance / 2)
