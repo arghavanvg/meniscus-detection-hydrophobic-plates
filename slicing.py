@@ -68,7 +68,7 @@ for frame_num in range(n_frames):
 z_data = [[float(z_dist), float(np.mean(counts))] for z_dist, counts in zip(z_distances, z_counts)]
 np.savetxt(f"{output_path}counts.dat", z_data, fmt="%.1f\t%.8f")
 
-v = float(d) * 10 * slice_thickness * 17.1 / 1000
+v = float_d * 10 * slice_thickness * 10 * 17.1 #A^3
 numdens_data = [[float(z_dist), float(np.mean(counts))/v] for z_dist, counts in zip(z_distances, z_counts)]
 np.savetxt(f"{output_path}numdens.dat", numdens_data, fmt="%.1f\t%.5f")
 
@@ -82,7 +82,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import MultipleLocator
 
 plt.figure(figsize=(8, 6))
-plt.plot(x_axis, no_wats, color='blue', linewidth=2, label="Average number of waters")
+plt.plot(x_axis, no_wats, color='blue', linewidth=2, label=f"Plates distance = {float_d*10:.1f} Å")
 # plt.plot(bin_centers, rho_i_plate, color='green', linewidth=2, label=f"{float(d)*10:.1f} Å")
 plt.title("Water Distribution between the edges")
 plt.xlabel('Distance from the edge in Å', fontsize=14)
@@ -99,10 +99,10 @@ plt.close()
 
 
 plt.figure(figsize=(8, 6))
-plt.plot(x_axis, numdens, color='blue', linewidth=2, label="Number Density of Waters")
+plt.plot(x_axis, numdens, color='blue', linewidth=2, label=f"Plates distance = {float_d*10:.1f} Å")
 plt.title("Number Density Distribution between the edges")
 plt.xlabel('Distance from the edge in Å', fontsize=14)
-plt.ylabel('Number Density', fontsize=14)
+plt.ylabel('Number Density N/(Å^3)', fontsize=14)
 plt.legend()
 plt.xlim(0, 18)
 plt.ylim(bottom=0)
